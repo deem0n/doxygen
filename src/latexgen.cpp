@@ -577,6 +577,10 @@ static void writeDefaultHeaderPart1(FTextStream &t)
   {
     t << font;
   }
+
+  // Use better font for listings
+  t << "\\renewcommand{\\ttdefault}{PTMono-TLF}\n";
+
   t << "\\usepackage{amssymb}\n"
        "\\usepackage{sectsty}\n"
        "\\allsectionsfont{%\n"
@@ -2381,5 +2385,3 @@ void LatexGenerator::writeLabel(const char *l,bool isLast)
 void LatexGenerator::endLabels()
 {
 }
-
-

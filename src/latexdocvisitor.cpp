@@ -351,10 +351,19 @@ void LatexDocVisitor::visit(DocVerbatim *s)
   {
     case DocVerbatim::Code:
       {
-        m_ci.startCodeFragment("DoxyCode");
-        getCodeParser(lang).parseCode(m_ci,s->context(),s->text(),langExt,
-                                      s->isExample(),s->exampleFile());
-        m_ci.endCodeFragment("DoxyCode");
+        static bool verbatimListings = Config_getBool(LATEX_VERBATIM_LISTINGS);
+
+        if (verbatimListings) {
+          m_t << "\n\\begin{DoxyVerbatimCode}";
+          m_t << "{" << usedTableLevels() << "}{" << lang << "}\n";
+          m_t << s->text() << "\n";
+          m_t << "\\end{DoxyVerbatimCode}\n";
+        } else {
+          m_ci.startCodeFragment("DoxyCode");
+          getCodeParser(lang).parseCode(m_ci,s->context(),s->text(),langExt,
+                                        s->isExample(),s->exampleFile());
+          m_ci.endCodeFragment("DoxyCode");
+        }
       }
       break;
     case DocVerbatim::Verbatim:
@@ -1947,4 +1956,3 @@ void LatexDocVisitor::writePlantUMLFile(const QCString &baseName, DocVerbatim *s
   visitCaption(this, s->children());
   visitPostEnd(m_t, s->hasCaption());
 }
-
